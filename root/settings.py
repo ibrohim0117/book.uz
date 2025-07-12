@@ -4,9 +4,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# .env faylini yuklash
+load_dotenv(BASE_DIR / '.env')
 
+# O'zgaruvchilarni olish
 SECRET_KEY = os.getenv('SECRET_KEY')
-
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = []
