@@ -17,6 +17,7 @@ class CategoryListAPIView(ListAPIView):
 class CategoryCreateAPIView(CreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated, )
 
 
 @extend_schema(tags=['book'])

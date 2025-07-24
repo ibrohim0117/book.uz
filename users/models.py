@@ -7,7 +7,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-# from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 NEW = 'new'
@@ -80,13 +80,13 @@ class User(AbstractUser):
         )
         return code
 
-    # def token(self):
-    #     refresh = RefreshToken.for_user(self)
-    #     data = {
-    #         "refresh_token": str(refresh),
-    #         "access_token": str(refresh.access_token)
-    #     }
-    #     return data
+    def token(self):
+        refresh = RefreshToken.for_user(self)
+        data = {
+            "refresh_token": str(refresh),
+            "access_token": str(refresh.access_token)
+        }
+        return data
 
 
     def __str__(self):
