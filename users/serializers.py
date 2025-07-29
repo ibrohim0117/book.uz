@@ -61,3 +61,6 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         }
         return data
         
+
+class CheckUserCodeSerializer(Serializer):
+    code = serializers.CharField(max_length=6)

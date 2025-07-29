@@ -2,10 +2,12 @@ from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
+from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from .models import User
-from .serializers import UserRegisterSerializer, UserLoginSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, CheckUserCodeSerializer
 
 
 @extend_schema(tags=['auth'])
@@ -18,3 +20,43 @@ class UserRegisterView(CreateAPIView):
 @extend_schema(tags=["auth"])
 class UserLoginApiView(TokenObtainPairView):
     serializer_class = UserLoginSerializer
+
+
+
+class UserCheckApiView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+
+    @extend_schema(request=CheckUserCodeSerializer)
+    def post(self, request):
+        user = self.request.user
+        serializer = CheckUserCodeSerializer(data=request.data)
+        if serializer.is_valid():
+            code = serializer.validated_data.get('code')
+            print(user, code)
+            print(self.check_code(user, code))
+
+        return Response({
+            'message': 'User tasdiqlandi!'
+        })
+    
+
+    @staticmethod
+    def check_code(user, code):
+        code_list = user.codes.filter(code=code, is_confirmed=False)
+        if not code_list.exists():
+            # print(code_list.first())
+            raise ValidationError({
+                "message": "Code xato yokida eskirgan!"
+            })
+        
+        code_list.update(is_confirmed=True)
+        user.is_verified = True
+        user.auth_status = User.AuthStatus.CODE_VERIFIED
+        user.save()
+
+        return True
+
+
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzODQ4NDM3LCJpYXQiOjE3NTM3NjIwMzcsImp0aSI6Ijg5ZmZjZGQxYTczYjQzMzE4ZGFhYjY5MDAyMThiOGRmIiwidXNlcl9pZCI6IjEyIn0.QAU5JKVjlkyXmIF71h8QIVJVhlPSvZMdshKncqBcJHY
+    
