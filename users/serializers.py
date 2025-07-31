@@ -50,8 +50,8 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         if auth_user is None:
             raise ValidationError({'message': 'Telefon raqam yoki parol noto‘g‘ri!'})
 
-        # if not auth_user.is_verified:
-        #     raise ValidationError({'message': "Siz hali ro'yhatdan to'liq o'tmagansiz!"})
+        if not auth_user.is_verified:
+            raise ValidationError({'message': "Siz hali ro'yhatdan to'liq o'tmagansiz!"})
 
         token_data = super().get_token(auth_user)
         data = {
@@ -63,4 +63,9 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         
 
 class CheckUserCodeSerializer(Serializer):
+    phone = serializers.CharField()
     code = serializers.CharField(max_length=6)
+
+
+class GetPhoneSerializer(Serializer):
+    phone = serializers.CharField()
