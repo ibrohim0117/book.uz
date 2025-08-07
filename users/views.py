@@ -8,8 +8,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from .models import User
-from .serializers import UserRegisterSerializer, UserLoginSerializer, CheckUserCodeSerializer, GetPhoneSerializer
-
+from .serializers import (
+    UserRegisterSerializer, UserLoginSerializer, CheckUserCodeSerializer,
+    GetPhoneSerializer
+)
 
 @extend_schema(tags=['auth'])
 class UserRegisterView(CreateAPIView):

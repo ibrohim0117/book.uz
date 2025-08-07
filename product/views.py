@@ -2,8 +2,10 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView, CreateAPIView
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
+from django_filters import rest_framework as filters
 
 from .models import Category, Book
+from .filters import ProductFilter
 from .serializers import CategorySerializer, BookSerializer
 
 
@@ -24,6 +26,12 @@ class CategoryCreateAPIView(CreateAPIView):
 class BookListAPIView(ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    # filterset_fields = ('name', )
+    filterset_class = ProductFilter
+    # search_fields = ['name']
+    
+
 
 
 
